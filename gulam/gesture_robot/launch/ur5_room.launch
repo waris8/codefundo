@@ -1,0 +1,15 @@
+<launch>
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+   <arg name="limited" default="false"  doc="If true, limits joint range [-PI, PI] on all joints." />
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find gesture_robot)/world/gesture_robot_world.world"/>
+    <!-- more default parameters can be changed here -->
+  </include>
+  <include file="$(find ur_description)/launch/ur5_upload.launch">
+    <arg name="limited" value="$(arg limited)"/>
+  </include>
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x -1.5 -y 2.5 -z 1.036" respawn="false" output="screen" />
+  <rosparam file="$(find gesture_robot)/param/params.yaml" command="load"/>
+</launch>
